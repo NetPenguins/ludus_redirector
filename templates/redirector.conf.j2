@@ -1,0 +1,46 @@
+<VirtualHost *:80>
+    ServerName {{ redirector_host }}
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    <Directory /var/www/html>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/redirector_error.log
+    CustomLog ${APACHE_LOG_DIR}/redirector_access.log combined
+    # Default to ssl 
+    RewriteEngine On
+    RewriteRule ^/(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+    ServerName {{ redirector_host }}
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    <Directory /var/www/html>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/redirector_ssl_error.log
+    CustomLog ${APACHE_LOG_DIR}/redirector_ssl_access.log combined
+
+    SSLEngine on
+    SSLCertificateFile {{ ssl_certificate_file }}
+    SSLCertificateKeyFile {{ ssl_certificate_key_file }}
+    {% if ssl_certificate_chain_file is defined %}
+    SSLCertificateChainFile {{ ssl_certificate_chain_file }}
+    {% endif %}
+
+    RewriteEngine On
+    ProxyPreserveHost On
+    # Add more here if needed
+    {% for rule in rewrite_rules %}
+    {{ rule }}
+    {% endfor %}
+</VirtualHost>
+</IfModule> 

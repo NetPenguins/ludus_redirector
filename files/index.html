@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South Park: Digital Redemption</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --southpark-red: #e41f25;
+            --southpark-blue: #3ab0e2;
+            --southpark-yellow: #ffcb05;
+            --southpark-green: #4caf50;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .southpark-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        .character-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-10px) rotateY(10deg);
+            box-shadow: 0 20px 30px rgba(228, 31, 37, 0.4);
+        }
+        
+        .story-container {
+            perspective: 1000px;
+        }
+        
+        .story-card {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .front, .back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .back {
+            transform: rotateY(180deg);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(90deg, var(--southpark-red), var(--southpark-blue));
+        }
+        
+        .dialog-bubble {
+            position: relative;
+            border-radius: 20px;
+            padding: 15px;
+            max-width: 80%;
+        }
+        
+        .dialog-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: var(--southpark-blue) transparent;
+        }
+        
+        .kenny-mask {
+            background: radial-gradient(circle at 30% 30%, #f8d568 0%, #e6b422 50%, #d49b1a 100%);
+        }
+        
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(-5px, -5px); }
+            60% { transform: translate(5px, 5px); }
+            80% { transform: translate(5px, -5px); }
+            100% { transform: translate(0); }
+        }
+        
+        .holographic {
+            background: linear-gradient(45deg, 
+                rgba(58, 176, 226, 0.8), 
+                rgba(228, 31, 37, 0.8), 
+                rgba(255, 203, 5, 0.8), 
+                rgba(76, 175, 80, 0.8));
+            background-size: 400% 400%;
+            animation: holographic 8s ease infinite;
+        }
+        
+        @keyframes holographic {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Holographic Header -->
+    <header class="holographic py-6 px-4 text-center border-b-4 border-yellow-400">
+        <h1 class="southpark-font text-4xl md:text-6xl text-white drop-shadow-lg">
+            SOUTH PARK: DIGITAL REDEMPTION
+        </h1>
+        <p class="mt-2 text-lg md:text-xl font-bold text-white">A Futuristic Interactive Adventure</p>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Story Progress -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="southpark-font text-sm">Episode 1: The Cyber Wars</span>
+                <span class="southpark-font text-sm">25% Complete</span>
+            </div>
+            <div class="progress-bar rounded-full"></div>
+        </div>
+
+        <!-- Story Container -->
+        <div class="story-container mb-12 h-96 relative" id="storyContainer">
+            <div class="story-card relative w-full h-full" id="storyCard">
+                <!-- Front Side - Current Scene -->
+                <div class="front bg-gray-900 rounded-xl p-6 flex flex-col justify-between border-2 border-blue-400">
+                    <div class="flex justify-center mb-4">
+                        <div class="kenny-mask w-16 h-16 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-skull text-2xl text-gray-800"></i>
+                        </div>
+                        <div class="dialog-bubble bg-blue-500 text-white self-start">
+                            <p class="southpark-font text-xs md:text-sm">Dude! The aliens are hacking into Cartman's smart fridge again!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center px-4">
+                        <p class="text-lg md:text-xl mb-6">The year is 2042. South Park has become a tech dystopia where Randy Marsh's Tegridy Farms has evolved into a mega-corporation controlling the world's weed supply through AI-powered drones. The kids must band together to stop an alien invasion disguised as a viral TikTok challenge.</p>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <div class="dialog-bubble bg-red-500 text-white self-end">
+                            <p class="southpark-font text-xs md:text-sm">Screw you guys, I'm going to Mars!</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center ml-4">
+                            <i class="fas fa-angry text-2xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Back Side - Next Scene (hidden initially) -->
+                <div class="back bg-gray-800 rounded-xl p-6 flex flex-col justify-between border-2 border-green-400">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-purple-500 flex items-center justify-center mr-4">
+                            <i class="fas fa-robot text-2xl text-white"></i>
+                        </div>
+                        <div class="dialog-bubble bg-purple-500 text-white self-start">
+                            <p class="southpark-font text-xs md:text-sm">Beep boop! I am Awesome-O 9000 and I have calculated a 99.9% chance you're all gonna die!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center px-4">
+                        <p class="text-lg md:text-xl mb-6">The gang discovers that the aliens are actually future versions of themselves, sent back in time to prevent the invention of the "Tegridy Token" cryptocurrency that eventually destroys all human civilization.</p>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <div class="dialog-bubble bg-yellow-400 text-gray-900 self-end">
+                            <p class="southpark-font text-xs md:text-sm">Oh my god! They killed our future selves!</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center ml-4">
+                            <i class="fas fa-surprise text-2xl text-gray-900"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Selection -->
+        <div class="mb-12">
+            <h2 class="southpark-font text-2xl md:text-3xl text-center mb-6 text-yellow-400">CHOOSE YOUR CHARACTER</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Stan -->
+                <div class="character-card bg-gray-800 rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 border-2 border-transparent">
+                    <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-blue-500 flex items-center justify-center">
+                        <i class="fas fa-user-astronaut text-3xl text-white"></i>
+                    </div>
+                    <h3 class="southpark-font text-blue-400">STAN</h3>
+                    <p class="text-xs mt-1">The Reluctant Leader</p>
+                    <div class="mt-2 flex justify-center space-x-1">
+                        <span class="text-blue-400"><i class="fas fa-bolt"></i> 85</span>
+                        <span class="text-red-500 ml-2"><i class="fas fa-heart"></i> 70</span>
+                    </div>
+                </div>
+                
+                <!-- Kyle -->
+                <div class="character-card bg-gray-800 rounded-xl p-4 text-center cursor-pointer hover:border-green-400 border-2 border-transparent">
+                    <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-green-500 flex items-center justify-center">
+                        <i class="fas fa-hat-wizard text-3xl text-white"></i>
+                    </div>
+                    <h3 class="southpark-font text-green-400">KYLE</h3>
+                    <p class="text-xs mt-1">The Ethical Hacker</p>
+                    <div class="mt-2 flex justify-center space-x-1">
+                        <span class="text-blue-400"><i class="fas fa-bolt"></i> 95</span>
+                        <span class="text-red-500 ml-2"><i class="fas fa-heart"></i> 60</span>
+                    </div>
+                </div>
+                
+                <!-- Cartman -->
+                <div class="character-card bg-gray-800 rounded-xl p-4 text-center cursor-pointer hover:border-red-500 border-2 border-transparent">
+                    <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-red-500 flex items-center justify-center">
+                        <i class="fas fa-robot text-3xl text-white"></i>
+                    </div>
+                    <h3 class="southpark-font text-red-500">CARTMAN</h3>
+                    <p class="text-xs mt-1">The AI Overlord</p>
+                    <div class="mt-2 flex justify-center space-x-1">
+                        <span class="text-blue-400"><i class="fas fa-bolt"></i> 50</span>
+                        <span class="text-red-500 ml-2"><i class="fas fa-heart"></i> 90</span>
+                    </div>
+                </div>
+                
+                <!-- Kenny -->
+                <div class="character-card bg-gray-800 rounded-xl p-4 text-center cursor-pointer hover:border-yellow-400 border-2 border-transparent">
+                    <div class="kenny-mask w-20 h-20 mx-auto mb-3 rounded-full flex items-center justify-center">
+                        <i class="fas fa-skull text-3xl text-gray-800"></i>
+                    </div>
+                    <h3 class="southpark-font text-yellow-400">KENNY</h3>
+                    <p class="text-xs mt-1">The Immortal One</p>
+                    <div class="mt-2 flex justify-center space-x-1">
+                        <span class="text-blue-400"><i class="fas fa-bolt"></i> 75</span>
+                        <span class="text-red-500 ml-2"><i class="fas fa-infinity"></i> ∞</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col md:flex-row justify-center gap-4 mb-8">
+            <button class="southpark-font bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg text-sm md:text-base transition-all transform hover:scale-105 flex items-center justify-center">
+                <i class="fas fa-fist-raised mr-2"></i> FIGHT THE ALIENS
+            </button>
+            <button class="southpark-font bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg text-sm md:text-base transition-all transform hover:scale-105 flex items-center justify-center">
+                <i class="fas fa-laptop-code mr-2"></i> HACK THE MAINFRAME
+            </button>
+            <button class="southpark-font bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-3 px-6 rounded-lg text-sm md:text-base transition-all transform hover:scale-105 flex items-center justify-center" id="flipBtn">
+                <i class="fas fa-sync-alt mr-2"></i> FLIP THE STORY
+            </button>
+        </div>
+
+        <!-- Easter Egg -->
+        <div class="text-center mt-8">
+            <button id="easterEggBtn" class="text-gray-500 text-xs hover:text-yellow-400 transition">
+                <i class="fas fa-question-circle mr-1"></i> What would Chef do?
+            </button>
+            <div id="chefModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+                <div class="bg-gray-900 rounded-xl p-6 max-w-md border-2 border-red-500 relative">
+                    <button id="closeChef" class="absolute top-2 right-2 text-white hover:text-red-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 rounded-full bg-brown-500 flex items-center justify-center mr-4">
+                            <i class="fas fa-utensils text-2xl text-white"></i>
+                        </div>
+                        <h3 class="southpark-font text-red-500 text-xl">CHEF'S ADVICE</h3>
+                    </div>
+                    <p class="mb-4">"Oh children, in this futuristic cyber battle, you gotta remember - love is like a fine stew. You can't microwave that ish!"</p>
+                    <div class="text-right">
+                        <p class="southpark-font text-xs text-gray-400">- Chef, probably</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Holographic Footer -->
+    <footer class="holographic py-4 px-4 text-center border-t-4 border-yellow-400">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-2 md:mb-0">
+                <p class="southpark-font text-xs md:text-sm text-white">© 2042 South Park Digital Studios</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="text-white hover:text-yellow-400 transition">
+                    <i class="fab fa-discord text-xl"></i>
+                </a>
+                <a href="#" class="text-white hover:text-yellow-400 transition">
+                    <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="#" class="text-white hover:text-yellow-400 transition">
+                    <i class="fab fa-tiktok text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Flip story card
+        document.getElementById('flipBtn').addEventListener('click', function() {
+            const storyCard = document.getElementById('storyCard');
+            storyCard.classList.toggle('flipped');
+            
+            // Change button text based on state
+            if (storyCard.classList.contains('flipped')) {
+                this.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> FLIP BACK';
+            } else {
+                this.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> FLIP THE STORY';
+            }
+        });
+        
+        // Easter egg - Chef's advice
+        const easterEggBtn = document.getElementById('easterEggBtn');
+        const chefModal = document.getElementById('chefModal');
+        const closeChef = document.getElementById('closeChef');
+        
+        easterEggBtn.addEventListener('click', function() {
+            chefModal.classList.remove('hidden');
+            // Play chef sound would go here
+        });
+        
+        closeChef.addEventListener('click', function() {
+            chefModal.classList.add('hidden');
+        });
+        
+        // Character selection
+        const characterCards = document.querySelectorAll('.character-card');
+        characterCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove any existing selected class
+                characterCards.forEach(c => c.classList.remove('border-yellow-400', 'glitch'));
+                
+                // Add selected effect
+                this.classList.add('border-yellow-400', 'glitch');
+                
+                // Stop glitch after 1 second
+                setTimeout(() => {
+                    this.classList.remove('glitch');
+                }, 1000);
+                
+                // Play selection sound would go here
+            });
+        });
+        
+        // Simulate some UI effects
+        setInterval(() => {
+            const randomChar = Math.floor(Math.random() * characterCards.length);
+            characterCards[randomChar].classList.add('glitch');
+            setTimeout(() => {
+                characterCards[randomChar].classList.remove('glitch');
+            }, 300);
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+---
+- name: Install Apache2 and mod_ssl
+  ansible.builtin.apt:
+    name:
+      - apache2
+      - ssl-cert
+    state: present
+    update_cache: yes
+  
+- name: Enable mod_proxy
+  ansible.builtin.command:
+    cmd: a2enmod proxy
+  become: true
+  notify: Restart Apache
+
+- name: Enable mod_proxy_http
+  ansible.builtin.command:
+    cmd: a2enmod proxy_http
+  become: true
+  notify: Restart Apache
+
+- name: Enable mod_rewrite
+  ansible.builtin.command: a2enmod rewrite
+  notify: Restart Apache
+  args:
+    creates: /etc/apache2/mods-enabled/rewrite.load
+
+- name: Enable mod_ssl
+  ansible.builtin.command: a2enmod ssl
+  notify: Restart Apache
+  args:
+    creates: /etc/apache2/mods-enabled/ssl.load
+
+- name: Deploy redirector Apache site config
+  ansible.builtin.template:
+    src: redirector.conf.j2
+    dest: /etc/apache2/sites-available/redirector.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload Apache
+
+- name: Enable redirector site
+  ansible.builtin.command: a2ensite redirector.conf
+  notify: Reload Apache
+  args:
+    creates: /etc/apache2/sites-enabled/redirector.conf
+
+- name: Copy index.html to web root
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: www-data
+    mode: '0644'
+    force: yes
+
+- name: Disable default site
+  ansible.builtin.command: a2dissite 000-default.conf
+  notify: Reload Apache
+  args:
+    removes: /etc/apache2/sites-enabled/000-default.conf
+
+- name: Ensure Apache2 is running and enabled
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: yes

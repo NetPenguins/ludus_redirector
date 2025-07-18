@@ -1,0 +1,9 @@
+---
+# Default variables for the redirector role
+redirector_target_host: "c2.ludus"  # Change to your C2 or decoy server
+redirector_host: "c2.redir.ludus"
+ssl_certificate_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # Change to your real cert
+ssl_certificate_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"  # Change to your real key
+# rewrite_rules: 
+#   - 'RewriteRule ^/getsome$ http://10.{{ range_second_octet }}.200.5/getsome [P,L]'
+# ssl_certificate_chain_file: "/etc/ssl/certs/chain.pem"  # Uncomment if needed 

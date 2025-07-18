@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://docs.ludus.cloud/schemas/range-config.json
+ludus:
+  - vm_name: REDIRECTOR
+    hostname: redirector
+    template: debian-12-x64-server-template
+    vlan: 100
+    ip_last_octet: 10
+    ram_gb: 2
+    cpus: 2
+    linux: true
+    dns_rewrites:
+      - redir.ludus
+      - '*.redir.ludus'
+    roles:
+      - netpenguins.ludus_redirector
+    role_vars:
+      redirector_host: 'c2.redir.ludus'
+      redirector_target_host: "c2.ludus"  # Change to your C2 or decoy server
+      kali_vlan_subnet: "10.{{ range_second_octet }}.200.0/24" # Change to the subnet of your Kali VLAN 
+      rewrite_rules:
+        - 'RewriteRule ^/l33t$ https://10.100.200.5/getsome [P,L]'
+  - vm_name: KALI
+    hostname: kali
+    template: kali-x64-desktop-template
+    dns_rewrites:
+      - "c2.ludus"
+      - "*.c2.ludus"
+    vlan: 200
+    ip_last_octet: 5
+    ram_gb: 4
+    cpus: 2
+    linux: true
+network:
+  rules:
+    - name: Allow Kali to Redirector
+      vlan_src: 200
+      vlan_dst: 100
+      protocol: "all"
+      ports: "all"
+      action: ACCEPT
+    - name: Allow Redirector to Kali 
+      vlan_src: 100
+      vlan_dst: 200
+      protocol: "all"
+      ports: "all"
+      action: ACCEPT
+    - name: Allow Target to Redirector HTTP
+      vlan_src: 10
+      vlan_dst: 100
+      protocol: tcp
+      ports: 80
+      action: ACCEPT
+    - name: Allow Target to Redirector HTTPS
+      vlan_src: 10
+      vlan_dst: 100
+      protocol: tcp
+      ports: 443
+      action: ACCEPT
+  inter_vlan_default: DROP # Drop all by default 
+  external_default: ACCEPT  # Allow outbound internet if needed 
