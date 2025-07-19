@@ -2,10 +2,12 @@
 
 An Ansible role for Ludus to deploy and configure an Apache-based redirector, supporting custom rewrite rules. This role is designed for use in Ludus ranges and can be easily integrated with other roles and custom configurations.
 
+Although many view apache2 modrewrite as overkill it is a solid skill to have when practicing opsec friendly infrastructure. This role gives the 
+general skeleton of a standard redirector. The real fun is expanding on it!
+
 - [Usage](#usage)
 - [Role Variables](#role-variables)
 - [Network & Routing](#how-routing-and-network-restrictions-work)
-
 
 
 ## Features
@@ -67,7 +69,8 @@ ludus:
       redirector_target_host: "c2.ludus"  # Change to your C2
       kali_vlan_subnet: "10.{{ range_second_octet }}.200.0/24" # Change to the subnet of your Kali VLAN 
       rewrite_rules:
-        - 'RewriteRule ^/l33t$ https://10.100.200.5/getsome [P,L]'
+        - 'RewriteRule ^/l33t(/.*)?$ https://10.{{ range_second_octet }}.200.5/l33t$1 [P,L]' # C2 comms
+        - 'RewriteRule ^/g3t(/.*)?$ http://10.{{ range_second_octet }}.200.5/g3t$1 [P,L]' # random non ssl stuff (http.server)
   - vm_name: KALI
     hostname: kali
     template: kali-x64-desktop-template

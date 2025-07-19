@@ -32,13 +32,17 @@
     SSLEngine on
     SSLCertificateFile {{ ssl_certificate_file }}
     SSLCertificateKeyFile {{ ssl_certificate_key_file }}
+    SSLProxyEngine On
+    SSLProxyVerify none
+    SSLProxyCheckPeerCN off
+    SSLProxyCheckPeerName off
     {% if ssl_certificate_chain_file is defined %}
     SSLCertificateChainFile {{ ssl_certificate_chain_file }}
     {% endif %}
 
     RewriteEngine On
     ProxyPreserveHost On
-    # Add more here if needed
+    # Passed in via role variables
     {% for rule in rewrite_rules %}
     {{ rule }}
     {% endfor %}
