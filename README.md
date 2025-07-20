@@ -10,13 +10,17 @@ general skeleton of a standard redirector. The real fun is expanding on it!
 - [Network & Routing](#how-routing-and-network-restrictions-work)
 
 
-## Features
+> **💡 NOTE**
+>
+> If I end up needing it or there is enough interest I will extend this to also support nginx 
+
+
+## 🚀 Features
 - Installs and configures Apache2 with SSL support
 - Supports custom rewrite rules (dynamic via Ansible variables)
 - Deploys a custom `index.html` to the web root
 
-
-## Installation in Ludus
+## 🛠️ Installation in Ludus
 
 #### Install via Ansible Galaxy:
 
@@ -41,8 +45,6 @@ If you want to **customize the `index.html` page** or the **Apache2 configuratio
   - `netpenguins.ludus_redirector/templates/redirector.conf.j2`
 
 Edit these files as needed, then run your playbook. Your custom files will be deployed to the target server.
-
-
 
 ## Usage
 
@@ -112,7 +114,7 @@ network:
   external_default: ACCEPT  # Allow outbound internet if needed 
 ```
 
-## Role Variables
+## ⚡️ Role Variables
 
 Available variables (see `defaults/main.yml`):
 
@@ -150,8 +152,5 @@ This role configures Apache2 to act as a redirector/proxy, using rewrite rules a
 
 GPLv3
 
-
-
-## Author
-
-This role was created by NetPenguins for Ludus.
+## For Ludus, by NetPenguins
+Happy Hacking🐧
